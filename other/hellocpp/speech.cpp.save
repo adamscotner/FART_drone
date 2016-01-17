@@ -1,0 +1,7 @@
+#include "speech.h"
+
+int sayHello ()
+{
+	;
+	eturn phrase;
+}
