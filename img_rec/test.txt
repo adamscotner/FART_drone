@@ -1,1 +1,23 @@
-testing
+Object Detection class should work using core openCV.
+
+Facial Recognition (facerec_video) requires external module (face) and possibly others. These modules can be found at:
+https://github.com/Itseez/opencv_contrib
+
+To run facial recognition:
+
+You’ll need:
+
+The path to a valid Haar-Cascade for detecting a face with a CascadeClassifier.
+The path to a valid CSV File for learning a FaceRecognizer.
+A webcam and its device id (you don’t know the device id? Simply start from 0 on and see what happens).
+If you are in Windows, then simply start the demo by running (from command line):
+
+facerec_video.exe <C:/path/to/your/haar_cascade.xml> <C:/path/to/your/csv.ext> <video device>
+If you are in Linux, then simply start the demo by running:
+
+./facerec_video </path/to/your/haar_cascade.xml> </path/to/your/csv.ext> <video device>
+An example. If the haar-cascade is at C:/opencv/data/haarcascades/haarcascade_frontalface_default.xml, the CSV file is at C:/facerec/data/celebrities.txt and I have a webcam with deviceId 1, then I would call the demo with:
+
+facerec_video.exe C:/opencv/data/haarcascades/haarcascade_frontalface_default.xml C:/facerec/data/celebrities.t
+
+More information can be found on: http://docs.opencv.org/3.0-beta/modules/face/doc/facerec/tutorial/facerec_video_recognition.html
