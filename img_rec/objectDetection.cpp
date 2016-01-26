@@ -12,7 +12,7 @@ using namespace std;
 using namespace cv;
 
 /** Function Headers */
-void detectAndDisplay( Mat frame );
+vector<float> detectAndDisplay( Mat frame );
 
 /** Global variables */
 
@@ -60,10 +60,13 @@ int main( void )
 
 /** @function detectAndDisplay */
 
-void detectAndDisplay( Mat frame )
+vector<float> detectAndDisplay( Mat frame )
 {
     std::vector<Rect> faces;
+	std::vector<float> position(3);
     Mat frame_gray;
+
+	position[0] = position[1] = position[2] = -1.0;
 
     cvtColor( frame, frame_gray, COLOR_BGR2GRAY );
     equalizeHist( frame_gray, frame_gray );
@@ -75,9 +78,16 @@ void detectAndDisplay( Mat frame )
     {
         Point center( faces[i].x + faces[i].width/2, faces[i].y + faces[i].height/2 );
         ellipse( frame, center, Size( faces[i].width/2, faces[i].height/2 ), 0, 0, 360, Scalar( 255, 0, 255 ), 4, 8, 0 );
-
-        Mat faceROI = frame_gray( faces[i] );
-        std::vector<Rect> eyes;
+		
+		if(i == 0)//Return position of one face.
+		{
+			position[0] = faces[i].x / ((float)frame_gray.size().width);//Relative position between 0 and +1
+			position[1] = faces[i].y / ((float)frame_gray.size().height);//Relative position between 0 and + 1
+			position[2] = (faces[i].width * faces[i].height) / ((float)frame_gray.size().width * frame_gray.size().height);//Relative position between 0 and +1
+		}
+	
+        //Mat faceROI = frame_gray( faces[i] );
+        //std::vector<Rect> eyes;
 
         //-- In each face, detect eyes
         //eyes_cascade.detectMultiScale( faceROI, eyes, 1.1, 2, 0 |CASCADE_SCALE_IMAGE, Size(30, 30) );
@@ -91,4 +101,7 @@ void detectAndDisplay( Mat frame )
     }
     //-- Show what you got
     imshow( window_name, frame );
+	printf("Pos0: %f; Pos1: %f; Pos2: %f;\n", position[0], position[1], position[2]);
+	
+	return position;
 }
