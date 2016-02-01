@@ -1,17 +1,18 @@
-#include "geRelativeSignals.h"
+#include "getRelativeSignals.h"
+
 
 using namespace std;
 
 /*
 	Get the new relative values (%) of Yaw, Pitch, Roll, and Throttle
 */
-vector<float> getRelativeSignals(vector<float> target, float skew, vector<float> idealLoc, vector<float> prevSignals)
+vector<float> getRelativeSignals(vector<float> target, float skew, vector<float> idealLoc)
 {
-	// if the target is already in the ideal location, maintain all signals
-	if (target == idealLoc)
-		return prevSignals;
 
-	// otherwise, calculate the new values
+	//float MAX_DIST[] = { 1, 1, 1 };
+	//float MIN_X = -1, MIN_Y = -1, MIN_Z = -1;
+	//float MAX_POWER_DIST[] = { 0.75, 0.75, 0.75 };
+
 
 	// target[0] | [-1, 1] => roll => newSignals[2] | [0, 1]
 	// target[1] | [-1, 1] => throttle => newSignals[3] | [0, 1]
@@ -36,11 +37,20 @@ vector<float> getRelativeSignals(vector<float> target, float skew, vector<float>
 	Get the translated relative value, from [-1, 1] to [0, 1] or [1, 0], depending on
 	the value of reverse
 */
-float translateVal(float orig, bool reverse)
+float checkAndTranslate(float orig, bool reverse)
 {
+float MAX_DIST[] = {1.0,1.0,1.0};
+float MAX_POWER_DIST[] = {0.75,0.75,0.75};
 	//TODO: check values and throw appropriate error
+
+	// if the object is beyond the threshold to trigger maximum power,
+	// force maximum power, else scale distance accordingly
+	if (abs(orig) > MAX_POWER_DIST[0]) 
+		orig = (orig > 0) ? 1 : -1; 
+	else 
+		orig = orig * (MAX_DIST[0] / MAX_POWER_DIST[0]);
 
 	orig = reverse ? (-1 * orig) : orig;
 
-	return (orig + 1) / 2;
+	return (orig / 2) + 0.5;
 }
