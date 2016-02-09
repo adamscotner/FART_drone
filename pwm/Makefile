@@ -83,4 +83,9 @@ tags:	$(SRC)
 depend:
 	makedepend -Y $(SRC)
 
+PWMChannel: PWMChannel.h PWMChannel.cpp
+	g++ $@.cpp -Wall $(INCLUDE) -c -o $@.o
+
+pwm_test: PWMChannel.o pwm_test.cpp
+	g++ $@.cpp PWMChannel.o $(LDFLAGS) $(LDLIBS) -o $@
 # DO NOT DELETE

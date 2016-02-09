@@ -48,7 +48,7 @@
 int calcTicks(float impulseMs, float period)
 {
 	//float cycleMs = 1000.0f / hertz; // +0.5f
-	return (int)(MAX_PWM * impulseMs / period / 1.18 );
+	return (int)(MAX_PWM * impulseMs / period );
 }
 
 /**
@@ -102,23 +102,24 @@ int main(void)
 				printf("Testing 1.25ms...\n");
 				//setPWMSignal(channel, PERIOD, 0.0);
 				//dutytime = map(0.5, , 1.25);
-				dutyTicks = calcTicks(1.25, PERIOD);
+				dutyTicks = calcTicks(1.25*3/4, PERIOD);
 				printf("dutyTicks = %d\n", dutyTicks);
 				pwmWrite(PIN_BASE, dutyTicks);
 				delay(2000);
 				printf("Testing 1.50ms...\n");
 				//dutytime = map(0, 1.5, 1.5);
 				//setPWMSignal(channel, PERIOD, 0.5);
-				dutyTicks = calcTicks(1.50, PERIOD);
+				dutyTicks = calcTicks(1.50*3/4, PERIOD);
 				printf("dutyTicks = %d\n", dutyTicks);
-				pwmWrite(PIN_BASE, dutyTicks);
+                                pwmWrite(PIN_BASE, dutyTicks);
 				delay(2000);
 				printf("Testing 1.75ms...\n");
 				//dutytime = map(0, 1.75, 1.75);
 				//setPWMSignal(channel, PERIOD, 1.0);
-				dutyTicks = calcTicks(1.75, PERIOD);
-				printf("dutyTicks = %d\n", dutyTicks)
-				pwmWrite(PIN_BASE, dutyTicks);
+				dutyTicks = calcTicks(1.75*3/4, PERIOD);
+				
+
+                                pwmWrite(PIN_BASE, dutyTicks);
 				delay(2000);
 			break;
 			case 2:
