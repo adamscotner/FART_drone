@@ -22,32 +22,32 @@ namespace pwm_ch{
 
 class PWMChannel{
 public:
-	PWMChannel();
-	PWMChannel(int channelSel, int period_us, int initDuty_us, int minDuty_us, int maxDuty_us);
-	int getChannel();
-	void setChannel(int channelSel);
-	int getPeriod();
+	PWMChannel(); 															//Default constructor
+	PWMChannel(unsigned int channelSel, unsigned int period_us, unsigned int initDuty_us, unsigned int minDuty_us, unsigned int maxDuty_us);
+	unsigned int getChannel(); 														//returns channel number assigned
+	void setChannel(unsigned int channelSel); 										//sets/reassigns channel
+	unsigned int getPeriod(); 														//returns set period
 	//void setPeriod(int period_us);
-	int getDutyTime();
-	void setDutyTime(int duty_us);
-	void setTempDutyTime(int duty_us, int duration_ms, int returnTo_us);
-	void setDutyFrom(int pin);
-	int getMinDuty();
+	unsigned int getDutyTime(); 														//returns active duty time
+	void setDutyTime(unsigned int duty_us); 											//sets active duty time
+	void setTempDutyTime(unsigned int duty_us, unsigned int duration_ms, unsigned int returnTo_us);	//sets active duty time for duration_ms then sets back to returnTo_us
+	//void setDutyFrom(int pin);
+	unsigned int getMinDuty();														//returns minimum duty time
 	//void setMinDuty(int min_us);
-	int getMaxDuty();
+	unsigned int getMaxDuty();														//returns maximum duty time
 	//void setMaxDuty(int max_us);
-	float getSigScale();
-	void setSigScale(float relSignal);
-	void setTempSigScale(float relSignal, int duration_ms, float returnSig);
-	void setSigScaleFrom(int pin);
-	~PWMChannel();
+	float getSigScale();													//get the 0..1 value of duty time
+	void setSigScale(float relSignal);										//set the 0..1 value of duty time
+	void setTempSigScale(float relSignal, unsigned int duration_ms, float returnSig);//set the 0..1 value of duty time for duration_ms
+	//void setSigScaleFrom(int pin);
+	~PWMChannel();															//Destructor
 
 private:
-	int channel;
-	int period;
-	int dutyTime;
-	int minDuty;
-	int maxDuty;
+	unsigned int channel;
+	unsigned int period;
+	unsigned int dutyTime;
+	unsigned int minDuty;
+	unsigned int maxDuty;
 	float sigScale;
 };
 

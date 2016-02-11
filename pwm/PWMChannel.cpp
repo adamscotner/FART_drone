@@ -11,7 +11,7 @@ PWMChannel::PWMChannel(){
 	setDutyTime(dutyTime);
 
 }
-PWMChannel::PWMChannel(int channelSel, int period_us, int initDuty_us, int minDuty_us, int maxDuty_us){
+PWMChannel::PWMChannel(unsigned int channelSel, unsigned int period_us, unsigned int initDuty_us, unsigned int minDuty_us, unsigned int maxDuty_us){
 
 	if(channelSel >= 0 && channelSel <= 15){
 		channel = channelSel;
@@ -34,25 +34,25 @@ PWMChannel::PWMChannel(int channelSel, int period_us, int initDuty_us, int minDu
 	}
 	setDutyTime(dutyTime);
 }
-int PWMChannel::getChannel(){
+unsigned int PWMChannel::getChannel(){
 	return channel;
 }
-void PWMChannel::setChannel(int channelSel){
+void PWMChannel::setChannel(unsigned int channelSel){
 	if(channelSel >= 0 && channelSel <= 15){
 		channel = channelSel;
 	}
 }
-int PWMChannel::getPeriod(){
+unsigned int PWMChannel::getPeriod(){
 	return period;
 }
-int PWMChannel::getDutyTime(){
+unsigned int PWMChannel::getDutyTime(){
 	return dutyTime;
 }
-void PWMChannel::setDutyTime(int duty_us){
-	int dutyTicks = 0;
+void PWMChannel::setDutyTime(unsigned int duty_us){
+	unsigned int dutyTicks = 0;
 	if(duty_us >= minDuty && duty_us <= maxDuty){
 		dutyTime = duty_us;
-		dutyTicks = (int)(pwm_ch::maxPWM * dutyTime / period / 1.18 );
+		dutyTicks = (unsigned int)(pwm_ch::maxPWM * dutyTime / period / 1.18 );
 		/*printf("dutyTicks: %d\n", dutyTicks);
 		printf("pinBase: %d\n", pwm_ch::pinBase);*/
 		pwmWrite(pwm_ch::pinBase + channel, dutyTicks);
@@ -60,32 +60,42 @@ void PWMChannel::setDutyTime(int duty_us){
 		return;
 	}
 }
-void PWMChannel::setTempDutyTime(int duty_us, int duration_ms, int returnTo_us){
+void PWMChannel::setTempDutyTime(unsigned int duty_us, unsigned int duration_ms, unsigned int returnTo_us){
 	setDutyTime(duty_us);
 	delay(duration_ms);
 	setDutyTime(returnTo_us);
 }
-void PWMChannel::setDutyFrom(int pin){
+/*void PWMChannel::setDutyFrom(int pin){
 	
-}
-int PWMChannel::getMinDuty(){
+}*/
+unsigned int PWMChannel::getMinDuty(){
 	return minDuty;
 }
-int PWMChannel::getMaxDuty(){
+unsigned int PWMChannel::getMaxDuty(){
 	return maxDuty;
 }
 float PWMChannel::getSigScale(){
 	return sigScale;
 }
 void PWMChannel::setSigScale(float relSignal){
-
+	if(relSignal > 1 || relSignal < 0){
+		return;
+	}
+	unsigned int relDuty = (unsigned int)(relSignal*(maxDuty - minDuty) + minDuty);
+	setDutyTime(relDuty);
 }
-void PWMChannel::setTempSigScale(float relSignal, int duration_ms, float returnSig){
-
+void PWMChannel::setTempSigScale(float relSignal, unsigned int duration_ms, float returnSig){
+	if(relSignal > 1 || relSignal < 0 || returnSig > 1 || returnSig < 0){
+		return;
+	}
+	setDutyTime(relSignal);
+	delay(duration_ms);
+	setDutyTime(returnSig);
 }
+/*
 void PWMChannel::setSigScaleFrom(int pin){
 
-}
+}*/
 PWMChannel::~PWMChannel(){
 	//empty
 }

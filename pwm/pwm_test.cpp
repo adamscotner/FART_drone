@@ -34,33 +34,44 @@ int main(int argc, char* argv[]){
 	//Clear all channels
 	pca9685PWMReset(fd);
 
+	//int r = srand(time());
+	//cout << r << endl;
+
 	//Declaring objects
-	PWMChannel ch_0(0, 19700, 1500, 1250, 1750);
+	PWMChannel *channel[5];
+	channel[0] = new PWMChannel(0, 19700, 1500, 1250, 1750);
+	channel[1] = new PWMChannel(1, 19700, 1500, 1250, 1750);
+	channel[2] = new PWMChannel(2, 19700, 1092, 1090, 1917);
+	channel[3] = new PWMChannel(3, 19700, 1500, 1079, 1908);
+	channel[4] = new PWMChannel(4, 19700, 1883, 1051, 1883);
+	//PWMChannel ch_0(0, 19700, 1500, 1250, 1750);
 	/*cout << "ch_0:\n"
 		<< ch_0.getPeriod() << endl
 		<< ch_0.getChannel() << endl
 		<< ch_0.getDutyTime() << endl;
 	pwmWrite(pwm_ch::pinBase + 0, 263);*/
-	PWMChannel ch_1(1, 19700, 1500, 1250, 1750);
-	PWMChannel ch_2(2, 19700, 1092, 1090, 1917);
-	PWMChannel ch_3(3, 19700, 1500, 1079, 1908);
-	PWMChannel ch_4(4, 19700, 1883, 1051, 1883);
-	//PWMChannel ch_8(8, 19700, 1092, 1092, 1883);
+	//PWMChannel ch_1(1, 19700, 1500, 1250, 1750);
+	//PWMChannel ch_2(2, 19700, 1092, 1090, 1917);
+	//PWMChannel ch_3(3, 19700, 1500, 1079, 1908);
+	//PWMChannel ch_4(4, 19700, 1883, 1051, 1883);
+	
+	//PWMChannel ch_7(7, 19700, 1092, 1092, 1883);
 	//pwmWrite(pwm_ch::pinBase + 8, 0);
 	//werror = wiringPiI2CWriteReg16 (fd, pwm_ch::pinBase-4, 1792) ;
 
 	//pca9685PWMReset(fd);
 
-	for(int i=0; i<76; i++){
+	for(int i=0; i<5; i++){
 		//pca9685PWMRead(fd, 8, &PWMresult, NULL);
 		//pwmWrite(pwm_ch::pinBase + ch, 263);
 		//PWMresult = digitalRead(pwm_ch::pinBase + ch) & 0xFFF;
 		//pca9685PWMRead(fd, ch, &PWMresult, 0);
-		PWMresult = wiringPiI2CReadReg16(fd, pwm_ch::pinBase - 50 + i) & 0xFFF;
+		//PWMresult = wiringPiI2CReadReg16(fd, pwm_ch::pinBase - 50 + i) & 0xFFF;
 		//cout << "fd: " << fd << endl;
-		//std::cout << "Channel "<<ch<<" PWM: " << PWMresult << std::flush;
-		std::cout << "pinBase -50+" <<i<<" Signal: " << PWMresult << endl;
-		//delay(100);
+		//PWMresult = digitalRead(21);
+		std::cout << "\rChannel "<<i<<" PWM: " << channel[i]->getDutyTime() << "     " << std::flush;
+		//std::cout << "pinBase -50+" <<i<<" Signal: " << PWMresult << endl;
+		delay(1000);
 	}
 	std::cout << std::endl;
 
