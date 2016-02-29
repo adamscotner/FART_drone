@@ -5,27 +5,35 @@ int main( void )
 	setUpDetectionModule();
 	test = 1;//set to non-zero value to show camera / position output
 
-	VideoCapture capture(0);
+	raspicam::RaspiCam_Cv Camera;
 	Mat frame;
 
-	if( !capture.isOpened() )
-        throw "Error when reading steam_avi";
+	//-- 2. Read the video stream
+    Camera.set( CV_CAP_PROP_FORMAT, CV_8UC3 );
+    cout<<"Opening Camera..."<<endl;
+    if (!Camera.open()) {cerr<<"Error opening the camera"<<endl;return -1;}
 
-    while ( capture.read(frame) )
+    while (true)
     {
+	Camera.grab();
+    	Camera.retrieve (frame);	
         if( frame.empty() )
         {
             printf(" --(!) No captured frame -- Break!");
             break;
         }
 
+	cout<<"Processing Image..."<<endl;
+
         //-- 3. Apply the classifier to the frame
-		detectAndDisplay( frame );
+        detectAndDisplay( frame );
 
         int c = waitKey(10);
         if( (char)c == 27 ) { break; } // escape
     }
 
+    Camera.release();
+    waitKey(0);
     return 0;
 }
 
