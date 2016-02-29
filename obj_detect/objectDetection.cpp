@@ -1,47 +1,13 @@
 #include "objectDetection.h"
 
-int main( void )
+/// **************************************************************************************************************** ///
+/// CONSTRUCTOR / DESTRUCTOR
+/// **************************************************************************************************************** ///
+
+
+// TODO: consider moving unsafe computations out of constructor
+objectDetection::objectDetection()
 {
-	setUpDetectionModule();
-	test = 1;//set to non-zero value to show camera / position output
-
-	raspicam::RaspiCam_Cv Camera;
-	Mat frame;
-
-	//-- 2. Read the video stream
-    Camera.set( CV_CAP_PROP_FORMAT, CV_8UC3 );
-    cout<<"Opening Camera..."<<endl;
-    if (!Camera.open()) {cerr<<"Error opening the camera"<<endl;return -1;}
-
-    while (true)
-    {
-	Camera.grab();
-    	Camera.retrieve (frame);	
-        if( frame.empty() )
-        {
-            printf(" --(!) No captured frame -- Break!");
-            break;
-        }
-
-	cout<<"Processing Image..."<<endl;
-
-        //-- 3. Apply the classifier to the frame
-        detectAndDisplay( frame );
-
-        int c = waitKey(10);
-        if( (char)c == 27 ) { break; } // escape
-    }
-
-    Camera.release();
-    waitKey(0);
-    return 0;
-}
-
-/** @function detectAndDisplay */
-
-int setUpDetectionModule()
-{
-
 	CascadeClassifier face_cascade;
 	CascadeClassifier prof_face_cascade;
 	face_cascades.push_back(face_cascade);
@@ -50,20 +16,58 @@ int setUpDetectionModule()
 	String face_cascade_name = "haarcascade_frontalface_alt.xml";
 	String face_cascade_name_4 = "haarcascade_profileface.xml";
 	window_name = "Capture - Face detection";
-	
-    //-- 1. Load the cascades
-    if( !face_cascades[0].load( face_cascade_name ) ){ printf("--(!)Error loading face cascade\n"); return -1; };
-	if( !face_cascades[1].load( face_cascade_name_4 ) ){ printf("--(!)Error loading profile face cascade\n"); return -1; };
-}
-
-std::vector<float> detectAndDisplay( Mat frame )
-{
-    std::vector<Rect> faces;
-	std::vector<Rect> prof_faces;
-	std::vector< std::vector<Rect> > face_types;
 
 	face_types.push_back(faces);
 	face_types.push_back(prof_faces);
+
+	position.resize(3);
+	
+    //-- 1. Load the cascades
+    if( !face_cascades[0].load( face_cascade_name ) ){ printf("--(!)Error loading face cascade\n"); };
+	if( !face_cascades[1].load( face_cascade_name_4 ) ){ printf("--(!)Error loading profile face cascade\n"); };
+}
+
+// destructor
+objectDetection::~objectDetection() {
+	
+}
+
+int main( void )
+{
+	objectDetection vision_module;
+	vision_module.initiateVisionModule();
+
+	while(true)
+	{
+		vision_module.detectAndDisplay();
+
+		int c = waitKey(10);
+        if( (char)c == 27 ) { break; } // escape
+	}
+
+    return 0;
+}
+
+void objectDetection::initiateVisionModule()
+{
+	test = 1;//set to non-zero value to show camera / position output
+
+	Camera.set( CV_CAP_PROP_FORMAT, CV_8UC3 );
+    cout<<"Opening Camera..."<<endl;
+    if (!Camera.open()) {cerr<<"Error opening the camera"<<endl;}
+}
+
+std::vector<float> objectDetection::detectAndDisplay()
+{
+	Mat frame;
+
+	Camera.grab();
+    Camera.retrieve (frame);
+
+	if( frame.empty() )
+    {
+		printf(" --(!) No captured frame -- !");
+    }
 
     Mat frame_gray;
 
@@ -95,7 +99,6 @@ std::vector<float> detectAndDisplay( Mat frame )
     //-- Show what you got
 	if(test){
 		imshow( window_name, frame );
-		printf("Pos0: %f; Pos1: %f; Pos2: %f;\n", position[0], position[1], position[2]);
 	}
 	return position;
 }
