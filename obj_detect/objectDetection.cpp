@@ -1,50 +1,32 @@
-
-#include "opencv2/objdetect.hpp"
-#include "opencv2/videoio.hpp"
-#include "opencv2/core/core.hpp"
-#include "opencv2/highgui.hpp"
-#include "opencv2/imgproc.hpp"
-
-#include <iostream>
-#include <stdio.h>
-#include <time.h>
+#include "objectDetection.h"
 
 using namespace std;
 using namespace cv;
 
-/** Function Headers */
-void detectAndDisplay( Mat frame );
-std::vector<float> getRelativePosition();
-
-/** Global variables */
+// Global variables
 std::vector<float> position(3);
 short test;
 
 String face_cascade_name = "haarcascade_frontalface_alt.xml";
 String face_cascade_name_4 = "haarcascade_profileface.xml";
-//String face_cascade_name_2 = "haarcascade_frontalface_alt2.xml";
-//String face_cascade_name_3 = "haarcascade_frontalface_default.xml";
-//String eye_cascade_name = "haarcascade_eye.xml";
-//String eyes_cascade_name = "haarcascade_eye_tree_eyeglasses.xml";
-//String left_eye_cascade_name = "haarcascade_lefteye_2splits.xml";
-//String right_eye_cascade_name = "haarcascade_righteye_2splits.xml";
-//CascadeClassifier eyes_cascade;
-CascadeClassifier face_cascade;
-CascadeClassifier prof_face_cascade;
+std::vector<CascadeClassifier> face_cascades;
 String window_name = "Capture - Face detection";
-
-/** @function main */
 
 int main( void )
 {
 	test = 1;//set to non-zero value to show camera / position output
 
+	CascadeClassifier face_cascade;
+	CascadeClassifier prof_face_cascade;
+	face_cascades.push_back(face_cascade);
+	face_cascades.push_back(prof_face_cascade);
+
     VideoCapture capture(0);
     Mat frame;
 	
     //-- 1. Load the cascades
-    if( !face_cascade.load( face_cascade_name ) ){ printf("--(!)Error loading face cascade\n"); return -1; };
-	if( !prof_face_cascade.load( face_cascade_name_4 ) ){ printf("--(!)Error loading profile face cascade\n"); return -1; };
+    if( !face_cascades[0].load( face_cascade_name ) ){ printf("--(!)Error loading face cascade\n"); return -1; };
+	if( !face_cascades[1].load( face_cascade_name_4 ) ){ printf("--(!)Error loading profile face cascade\n"); return -1; };
     //if( !eyes_cascade.load( eye_cascade_name ) ){ printf("--(!)Error loading eyes cascade\n"); return -1; };
 
     //-- 2. Read the video stream
@@ -64,7 +46,6 @@ int main( void )
 
         //-- 3. Apply the classifier to the frame
 		detectAndDisplay( frame );
-		getRelativePosition();
 
         int c = waitKey(10);
         if( (char)c == 27 ) { break; } // escape
@@ -72,20 +53,17 @@ int main( void )
     return 0;
 }
 
-std::vector<float> getRelativePosition()
-{
-	if(test){
-		printf("Pos0: %f; Pos1: %f; Pos2: %f;\n", position[0], position[1], position[2]);
-	}
-	return position;
-}
-
 /** @function detectAndDisplay */
 
-void detectAndDisplay( Mat frame )
+std::vector<float> detectAndDisplay( Mat frame )
 {
     std::vector<Rect> faces;
 	std::vector<Rect> prof_faces;
+	std::vector< std::vector<Rect> > face_types;
+
+	face_types.push_back(faces);
+	face_types.push_back(prof_faces);
+
     Mat frame_gray;
 
 	position[0] = position[1] = position[2] = 0.0;
@@ -93,56 +71,30 @@ void detectAndDisplay( Mat frame )
     cvtColor( frame, frame_gray, COLOR_BGR2GRAY );
     equalizeHist( frame_gray, frame_gray );
 
-    //-- Detect faces
-    face_cascade.detectMultiScale( frame_gray, faces, 1.1, 2, 0|CASCADE_SCALE_IMAGE, Size(30, 30) );
-
-	if(faces.size() > 0)
+	for(int j = 0; j < 2; j++)
 	{
-		for ( size_t i = 0; i < faces.size(); i++ )
-		{
-			Point center( faces[i].x + faces[i].width/2, faces[i].y + faces[i].height/2 );
-			ellipse( frame, center, Size( faces[i].width/2, faces[i].height/2 ), 0, 0, 360, Scalar( 255, 0, 255 ), 4, 8, 0 );
-		
-			if(i == 0)//Return position of one face.
-			{
-				position[0] = (((faces[i].x + faces[i].width/2) / ((float)frame_gray.size().width)) - 0.5) * 2;//Relative position between -1 and +1
-				position[1] = (((faces[i].y + faces[i].height/2) / ((float)frame_gray.size().height)) - 0.5) * 2;//Relative position between -1 and + 1
-				position[2] = (((faces[i].width * faces[i].height) / ((float)frame_gray.size().width * frame_gray.size().height * 0.35)) - 0.5) * 2;//Relative position between -1 and +1
-			}
-	
-			/*Mat faceROI = frame_gray( faces[i] );
-			std::vector<Rect> eyes;
+		face_cascades[j].detectMultiScale( frame_gray, face_types[j], 1.1, 3, 0|CASCADE_SCALE_IMAGE, Size(30, 30) );
 
-			//-- In each face, detect eyes
-			eyes_cascade.detectMultiScale( faceROI, eyes, 1.1, 2, 0 |CASCADE_SCALE_IMAGE, Size(30, 30) );
-
-			for ( size_t j = 0; j < eyes.size(); j++ )
-			{
-				Point eye_center( faces[i].x + eyes[j].x + eyes[j].width/2, faces[i].y + eyes[j].y + eyes[j].height/2 );
-				int radius = cvRound( (eyes[j].width + eyes[j].height)*0.25 );
-				circle( frame, eye_center, radius, Scalar( 255, 0, 0 ), 4, 8, 0 );
-			}*/
-			//printf("Pos0: %f; Pos1: %f; Pos2: %f;\n", position[0], position[1], position[2]);
-		}
-	}
-	else{
-		prof_face_cascade.detectMultiScale( frame_gray, prof_faces, 1.1, 2, 0|CASCADE_SCALE_IMAGE, Size(30, 30) );
-		for ( size_t i = 0; i < prof_faces.size(); i++ )
+		//Circle and retrieve position of only one face;
+		if(face_types[j].size() > 0)
 		{
-			Point center( prof_faces[i].x + prof_faces[i].width/2, prof_faces[i].y + prof_faces[i].height/2 );
-			ellipse( frame, center, Size( prof_faces[i].width/2, prof_faces[i].height/2 ), 0, 0, 360, Scalar( 255, 0, 255 ), 4, 8, 0 );
-		
-			if(i == 0)//Return position of one face.
-			{
-				position[0] = (((prof_faces[i].x + prof_faces[i].width/2) / ((float)frame_gray.size().width)) - 0.5) * 2;//Relative position between -1 and +1
-				position[1] = (((prof_faces[i].y + prof_faces[i].height/2) / ((float)frame_gray.size().height)) - 0.5) * 2;//Relative position between -1 and + 1
-				position[2] = (((prof_faces[i].width * prof_faces[i].height) / ((float)frame_gray.size().width * frame_gray.size().height)) - 0.5) * 2;//Relative position between -1 and +1
-			}
-			//printf("Pos0: %f; Pos1: %f; Pos2: %f;\n", position[0], position[1], position[2]);
+			//if(test)
+			//	printf("The face type detected is: %i;\n", j);
+
+			int i = 0;
+			Point center( face_types[j][i].x + face_types[j][i].width/2, face_types[j][i].y + face_types[j][i].height/2 );
+			ellipse( frame, center, Size( face_types[j][i].width/2, face_types[j][i].height/2 ), 0, 0, 360, Scalar( 255, 0, 255 ), 4, 8, 0 );
+			position[0] = (((face_types[j][i].x + face_types[j][i].width/2) / ((float)frame_gray.size().width)) - 0.5) * 2;//Relative position between -1 and +1
+			position[1] = (((face_types[j][i].y + face_types[j][i].height/2) / ((float)frame_gray.size().height)) - 0.5) * 2;//Relative position between -1 and + 1
+			position[2] = (((face_types[j][i].width * face_types[j][i].height) / ((float)frame_gray.size().width * frame_gray.size().height * 0.35)) - 0.5) * 2;//Relative position between -1 and +1
+			if(j == 0)//If frontal_face was detected do not attemt to detect a profile_face
+				j++;
 		}
 	}
     //-- Show what you got
 	if(test){
 		imshow( window_name, frame );
+		printf("Pos0: %f; Pos1: %f; Pos2: %f;\n", position[0], position[1], position[2]);
 	}
+	return position;
 }
