@@ -11,7 +11,19 @@
 #include <stdio.h>
 #include <time.h>
 
+using namespace std;
+using namespace cv;
+
+// Global variables
+vector<float> position(3);
+short test;
+vector<CascadeClassifier> face_cascades;
+String window_name;
+
 //Detect and displayes a face within a given frame;
-std::vector<float> detectAndDisplay( cv::Mat frame );
+//Return the face position;
+vector<float> detectAndDisplay(Mat frame );
+
+int setUpDetectionModule();
 
 #endif

@@ -1,37 +1,12 @@
 #include "objectDetection.h"
 
-using namespace std;
-using namespace cv;
-
-// Global variables
-std::vector<float> position(3);
-short test;
-
-String face_cascade_name = "haarcascade_frontalface_alt.xml";
-String face_cascade_name_4 = "haarcascade_profileface.xml";
-std::vector<CascadeClassifier> face_cascades;
-String window_name = "Capture - Face detection";
-
 int main( void )
 {
+	setUpDetectionModule();
 	test = 1;//set to non-zero value to show camera / position output
 
-	CascadeClassifier face_cascade;
-	CascadeClassifier prof_face_cascade;
-	face_cascades.push_back(face_cascade);
-	face_cascades.push_back(prof_face_cascade);
-
-    VideoCapture capture(0);
-    Mat frame;
-	
-    //-- 1. Load the cascades
-    if( !face_cascades[0].load( face_cascade_name ) ){ printf("--(!)Error loading face cascade\n"); return -1; };
-	if( !face_cascades[1].load( face_cascade_name_4 ) ){ printf("--(!)Error loading profile face cascade\n"); return -1; };
-    //if( !eyes_cascade.load( eye_cascade_name ) ){ printf("--(!)Error loading eyes cascade\n"); return -1; };
-
-    //-- 2. Read the video stream
-    //capture.open( -1 );
-    //if ( ! capture.isOpened() ) { printf("--(!)Error opening video capture\n"); return -1; }
+	VideoCapture capture(0);
+	Mat frame;
 
 	if( !capture.isOpened() )
         throw "Error when reading steam_avi";
@@ -50,10 +25,28 @@ int main( void )
         int c = waitKey(10);
         if( (char)c == 27 ) { break; } // escape
     }
+
     return 0;
 }
 
 /** @function detectAndDisplay */
+
+int setUpDetectionModule()
+{
+
+	CascadeClassifier face_cascade;
+	CascadeClassifier prof_face_cascade;
+	face_cascades.push_back(face_cascade);
+	face_cascades.push_back(prof_face_cascade);
+
+	String face_cascade_name = "haarcascade_frontalface_alt.xml";
+	String face_cascade_name_4 = "haarcascade_profileface.xml";
+	window_name = "Capture - Face detection";
+	
+    //-- 1. Load the cascades
+    if( !face_cascades[0].load( face_cascade_name ) ){ printf("--(!)Error loading face cascade\n"); return -1; };
+	if( !face_cascades[1].load( face_cascade_name_4 ) ){ printf("--(!)Error loading profile face cascade\n"); return -1; };
+}
 
 std::vector<float> detectAndDisplay( Mat frame )
 {
