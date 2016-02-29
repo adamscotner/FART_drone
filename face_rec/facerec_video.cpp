@@ -16,7 +16,7 @@
  *   See <http://www.opensource.org/licenses/bsd-license>
  */
 
-
+/*
 
 #include "opencv2/core.hpp"
 #include "opencv2/highgui.hpp"
@@ -83,6 +83,7 @@ int main(int argc, const char *argv[]) {
     // Create a FaceRecognizer and train it on the given images:
     Ptr<FaceRecognizer> model = createFisherFaceRecognizer();
     model->train(images, labels);
+	model->save("eigenfaces_at.yml");
     // That's it for learning the Face Recognition model. You now
     // need to create the classifier for the task of Face Detection.
     // We are going to use the haar cascade you have specified in the
@@ -153,3 +154,4 @@ int main(int argc, const char *argv[]) {
     }
     return 0;
 }
+*/
