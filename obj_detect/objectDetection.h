@@ -1,3 +1,5 @@
+
+
 #ifndef OBJECTDETECTION_H
 #define OBJECTDETECTION_H
 
@@ -28,7 +30,8 @@ public:
 
 	~objectDetection();
 
-	void initiateVisionModule();
+	//set the debug variable non-zero value to show camera / position output
+	void initiateVisionModule(short debug);
 
 	std::vector<float> detectAndDisplay();
 
@@ -51,3 +54,4 @@ private:
 	vector< vector<Rect> > face_types;
 };
 #endif
+

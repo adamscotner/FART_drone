@@ -25,6 +25,7 @@ objectDetection::objectDetection()
     //-- 1. Load the cascades
     if( !face_cascades[0].load( face_cascade_name ) ){ printf("--(!)Error loading face cascade\n"); };
 	if( !face_cascades[1].load( face_cascade_name_4 ) ){ printf("--(!)Error loading profile face cascade\n"); };
+
 }
 
 // destructor
@@ -35,7 +36,7 @@ objectDetection::~objectDetection() {
 int main( void )
 {
 	objectDetection vision_module;
-	vision_module.initiateVisionModule();
+	vision_module.initiateVisionModule(1);
 
 	while(true)
 	{
@@ -48,10 +49,14 @@ int main( void )
     return 0;
 }
 
-void objectDetection::initiateVisionModule()
+void objectDetection::initiateVisionModule(short debug)
 {
-	test = 1;//set to non-zero value to show camera / position output
+	test = debug;
 
+	//PC Port
+	//capture.open(0);
+
+	//Raspberry Pi Port
 	Camera.set( CV_CAP_PROP_FORMAT, CV_8UC3 );
     cout<<"Opening Camera..."<<endl;
     if (!Camera.open()) {cerr<<"Error opening the camera"<<endl;}
@@ -61,8 +66,12 @@ std::vector<float> objectDetection::detectAndDisplay()
 {
 	Mat frame;
 
+	//Raspbery Pi Port
 	Camera.grab();
     Camera.retrieve (frame);
+
+	//PC Port
+	//capture.read(frame);
 
 	if( frame.empty() )
     {
