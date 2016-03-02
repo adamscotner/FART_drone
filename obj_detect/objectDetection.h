@@ -10,9 +10,9 @@
 #include "opencv2/imgproc.hpp"
 
 //Raspberry Pi Port Only
-#include <raspicam/raspicam_cv.h>
-#include "opencv2/photo.hpp"
-#include "opencv2/core.hpp"
+//#include <raspicam/raspicam_cv.h>
+//#include "opencv2/photo.hpp"
+//#include "opencv2/core.hpp"
 
 #include <iostream>
 #include <stdio.h>
@@ -44,10 +44,10 @@ private:
 	short test;
 
 	//PC Port
-	//VideoCapture capture;
+	VideoCapture capture;
 
 	//Raspberry Pi Port
-	raspicam::RaspiCam_Cv Camera;
+	//raspicam::RaspiCam_Cv Camera;
 
 	vector<Rect> faces;
 	vector<Rect> prof_faces;
