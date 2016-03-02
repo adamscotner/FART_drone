@@ -55,12 +55,12 @@ void objectDetection::initiateVisionModule(short debug)
 	test = debug;
 
 	//PC Port
-	capture.open(0);
+	//capture.open(0);
 
 	//Raspberry Pi Port
-	//Camera.set( CV_CAP_PROP_FORMAT, CV_8UC3 );
-    //cout<<"Opening Camera..."<<endl;
-    //if (!Camera.open()) {cerr<<"Error opening the camera"<<endl;}
+	Camera.set( CV_CAP_PROP_FORMAT, CV_8UC3 );
+    cout<<"Opening Camera..."<<endl;
+    if (!Camera.open()) {cerr<<"Error opening the camera"<<endl;}
 }
 
 std::vector<float> objectDetection::detectAndDisplay()
@@ -68,11 +68,11 @@ std::vector<float> objectDetection::detectAndDisplay()
 	Mat frame;
 
 	//Raspbery Pi Port
-	//Camera.grab();
-    //Camera.retrieve (frame);
+	Camera.grab();
+    Camera.retrieve (frame);
 
 	//PC Port
-	capture.read(frame);
+	//capture.read(frame);
 
 	//if( frame.empty() )
     //{
