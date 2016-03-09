@@ -37,7 +37,7 @@ objectDetection::~objectDetection() {
 int main( void )
 {
 	objectDetection vision_module;
-	vision_module.initiateVisionModule(1);
+	vision_module.initiateVisionModule(0);
 
 	while(true)
 	{
