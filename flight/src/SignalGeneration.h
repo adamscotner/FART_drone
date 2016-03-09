@@ -42,6 +42,7 @@ class SignalGeneration
 		void newObjectPosition (double newPos[]);
 		void assignSignals ();
 		void assignSignals (double newPos[]);
+		void assignSignals (std::vector<double> newPosVec);
 		void calculateNewSignal (int, int);
 		void print();
 

@@ -28,9 +28,9 @@ SignalGeneration::SignalGeneration ()
 	targetPosition.assign(posArray, posArray + sizeof(posArray));
 
 	// distance after which maximum power will be applied
-	maxPowerThresh = 0.6;
+	maxPowerThresh = 0.1;
 	// percentage of maximum power to apply in any direction
-	maxPower = 1.0;
+	maxPower = 0.1;
 
 	// PWMChannel *channel[5];
 	signals.push_back(PWMChannel(3, 19700, 1500, 1079, 1908)); // yaw
@@ -50,6 +50,14 @@ void SignalGeneration::newObjectPosition (double newPos[])
 
 void SignalGeneration::assignSignals (double newPos[])
 {
+	newObjectPosition(newPos);
+	assignSignals();
+}
+
+void SignalGeneration::assignSignals (std::vector<double> newPosVec)
+{
+	double* newPos = &newPosVec[0];
+
 	newObjectPosition(newPos);
 	assignSignals();
 }

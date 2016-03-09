@@ -14,5 +14,22 @@
 using namespace std;
 
 int main() {
-	cout << "Hello World!" << endl;
+	//cout << "Hello World!" << endl;
+	cout.precision(3);
+
+
+	SignalGeneration sg;
+	objectDetection vision_module;
+	vector<double> pos;
+
+	vision_module.initiateVisionModule(1);
+
+	while(true)
+	{
+		pos = vision_module.detectAndDisplay();
+		sg.assignSignals(pos);
+		cin.ignore();
+	}
+
+    return 0;
 }
