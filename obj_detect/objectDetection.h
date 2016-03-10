@@ -33,13 +33,13 @@ public:
 	//set the debug variable non-zero value to show camera / position output
 	void initiateVisionModule(short debug);
 
-	std::vector<float> detectAndDisplay();
+	std::vector<double> detectAndDisplay();
 
 private:
 
 	// Global variables
 	vector<CascadeClassifier> face_cascades;
-	vector<float> position;
+	vector<double> position;
 	String window_name;
 	short test;
 

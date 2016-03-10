@@ -34,21 +34,21 @@ objectDetection::~objectDetection() {
 	
 }
 
-int main( void )
-{
-	objectDetection vision_module;
-	vision_module.initiateVisionModule(0);
+// int main( void )
+// {
+// 	objectDetection vision_module;
+// 	vision_module.initiateVisionModule(1);
 
-	while(true)
-	{
-		vision_module.detectAndDisplay();
+// 	while(true)
+// 	{
+// 		vision_module.detectAndDisplay();
 
-		int c = waitKey(10);
-        if( (char)c == 27 ) { break; } // escape
-	}
+// 		int c = waitKey(10);
+//         if( (char)c == 27 ) { break; } // escape
+// 	}
 
-    return 0;
-}
+//     return 0;
+// }
 
 void objectDetection::initiateVisionModule(short debug)
 {
@@ -63,7 +63,7 @@ void objectDetection::initiateVisionModule(short debug)
     if (!Camera.open()) {cerr<<"Error opening the camera"<<endl;}
 }
 
-std::vector<float> objectDetection::detectAndDisplay()
+std::vector<double> objectDetection::detectAndDisplay()
 {
 	Mat frame;
 
@@ -101,9 +101,9 @@ std::vector<float> objectDetection::detectAndDisplay()
 			int i = 0;
 			//Point center( face_types[j][i].x + face_types[j][i].width/2, face_types[j][i].y + face_types[j][i].height/2 );
 			//ellipse( frame, center, Size( face_types[j][i].width/2, face_types[j][i].height/2 ), 0, 0, 360, Scalar( 255, 0, 255 ), 4, 8, 0 );
-			position[0] = (((face_types[j][i].x + face_types[j][i].width/2) / ((float)frame_gray.size().width)) - 0.5) * 2;//Relative position between -1 and +1
-			position[1] = (((face_types[j][i].y + face_types[j][i].height/2) / ((float)frame_gray.size().height)) - 0.5) * 2;//Relative position between -1 and + 1
-			position[2] = (((face_types[j][i].width * face_types[j][i].height) / ((float)frame_gray.size().width * frame_gray.size().height * 0.35)) - 0.5) * 2;//Relative position between -1 and +1
+			position[0] = (((face_types[j][i].x + face_types[j][i].width/2) / ((double)frame_gray.size().width)) - 0.5) * 2;//Relative position between -1 and +1
+			position[1] = (((face_types[j][i].y + face_types[j][i].height/2) / ((double)frame_gray.size().height)) - 0.5) * 2;//Relative position between -1 and + 1
+			position[2] = (((face_types[j][i].width * face_types[j][i].height) / ((double)frame_gray.size().width * frame_gray.size().height * 0.35)) - 0.5) * 2;//Relative position between -1 and +1
 			//if(j == 0)//If frontal_face was detected do not attemt to detect a profile_face
 			//	j++;
 		}
