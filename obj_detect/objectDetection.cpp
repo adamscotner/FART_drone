@@ -90,7 +90,7 @@ std::vector<float> objectDetection::detectAndDisplay()
 	//j<1 to use frotnal face cascade only
 	for(int j = 0; j < 1; j++)
 	{
-		face_cascades[j].detectMultiScale( frame_gray, face_types[j], 1.3, 3, 0|CASCADE_SCALE_IMAGE, Size(45, 45) );
+		face_cascades[j].detectMultiScale( frame_gray, face_types[j], 1.5, 3, 0|CASCADE_SCALE_IMAGE, Size(45, 45) );
 
 		//Circle and retrieve position of only one face;
 		if(face_types[j].size() > 0)
